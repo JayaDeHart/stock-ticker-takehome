@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
-import "@/styles/globals.css";
+import ".//globals.css";
 import { Inter as FontSans } from "next/font/google";
 
 import { cn } from "@/lib/utils";
+import TopNav from "@/components/ui/topNav";
+import BottomNav from "@/components/ui/bottomNav";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -28,7 +30,9 @@ export default function RootLayout({
           fontSans.variable
         )}
       >
+        <TopNav />
         {children}
+        <BottomNav />
       </body>
     </html>
   );
