@@ -5,7 +5,7 @@ type Props = {};
 
 function Loading({}: Props) {
   return (
-    <div className="h-full w-full">
+    <div className="min-h-screen h-full w-full">
       <Spinner color="secondary" size="lg" />
     </div>
   );

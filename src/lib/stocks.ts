@@ -1,4 +1,5 @@
 import "server-only";
+import { APIData, TimeSeriesDataPoint } from "./types";
 const ALPHA_API_KEY = process.env.ALPHA_API_KEY;
 
 export const TICKERS = [
@@ -29,15 +30,38 @@ export async function getStocks(tickers: string[]) {
     tickers.map(async (ticker) => {
       const response = await fetch(
         `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${ticker}&interval=5min&apikey=${ALPHA_API_KEY}`,
-        { next: { revalidate: 86400 } }
+        { cache: "force-cache" }
       );
       const data = await response.json();
-      return {
-        symbol: ticker,
-        data,
-      };
+      console.log(data);
+      return transformAPIData(data);
     })
   );
 
   return stockDataArray;
+}
+
+export function transformAPIData(data: any): APIData {
+  return {
+    metaData: {
+      information: data["Meta Data"]["1. Information"],
+      symbol: data["Meta Data"]["2. Symbol"],
+      lastRefreshed: data["Meta Data"]["3. Last Refreshed"],
+      interval: data["Meta Data"]["4. Interval"],
+      outputSize: data["Meta Data"]["5. Output Size"],
+      timeZone: data["Meta Data"]["6. Time Zone"],
+    },
+    timeSeries: Object.entries(data["Time Series (5min)"]).map(
+      ([time, details]: [string, any]) => ({
+        time,
+        data: {
+          open: parseFloat(details["1. open"]),
+          high: parseFloat(details["2. high"]),
+          low: parseFloat(details["3. low"]),
+          close: parseFloat(details["4. close"]),
+          volume: parseInt(details["5. volume"], 10),
+        } as TimeSeriesDataPoint,
+      })
+    ),
+  };
 }
