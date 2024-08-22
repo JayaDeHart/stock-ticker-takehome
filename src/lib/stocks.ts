@@ -26,19 +26,28 @@ export const TICKERS = [
 ];
 
 export async function getStocks(tickers: string[]) {
-  const stockDataArray = await Promise.all(
-    tickers.map(async (ticker) => {
-      const response = await fetch(
-        `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${ticker}&interval=5min&apikey=${ALPHA_API_KEY}`,
-        { cache: "force-cache" }
-      );
-      const data = await response.json();
-      console.log(data);
-      return transformAPIData(data);
-    })
-  );
+  if (process.env.NODE_ENV === "development") {
+    const sampleData = await fetch(
+      "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=IBM&interval=5min&outputsize=full&apikey=demo"
+    );
+    const sampleDataJSON = await sampleData.json();
+    const processedData = transformAPIData(sampleDataJSON);
+    const processedDataArray = Array(20).fill(processedData);
+    return processedDataArray;
+  } else {
+    const stockDataArray = await Promise.all(
+      tickers.map(async (ticker) => {
+        const response = await fetch(
+          `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${ticker}&interval=5min&apikey=${ALPHA_API_KEY}`,
+          { cache: "force-cache" }
+        );
+        const data = await response.json();
+        return transformAPIData(data);
+      })
+    );
 
-  return stockDataArray;
+    return stockDataArray;
+  }
 }
 
 export function transformAPIData(data: any): APIData {
