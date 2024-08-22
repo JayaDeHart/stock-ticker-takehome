@@ -10,7 +10,7 @@ type Props = {
 };
 
 function BarChart({ data }: Props) {
-  const [dataPoints, setDataPoints] = useState(500);
+  const [dataPoints, setDataPoints] = useState(25);
   const [inputValue, setInputValue] = useState(dataPoints.toString());
   const [open, setOpen] = useState(false);
   const [tempData, setTempData] = useState(data);
@@ -94,7 +94,7 @@ interface BarChartProps {
   handleDelete: (index: number) => void;
 }
 
-const ChartDisplay: React.FC<BarChartProps> = ({ data, handleDelete }) => {
+function ChartDisplay({ data, handleDelete }: BarChartProps) {
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 
   const handleMouseEnter = (index: number) => {
@@ -105,7 +105,7 @@ const ChartDisplay: React.FC<BarChartProps> = ({ data, handleDelete }) => {
     setHoverIndex(null);
   };
 
-  const margin = 50;
+  const margin = 60;
   const width = 1000;
   const height = 600;
   const defaultBarWidth = 10;
@@ -134,7 +134,7 @@ const ChartDisplay: React.FC<BarChartProps> = ({ data, handleDelete }) => {
     <div
       style={{
         overflowX: showHorizontalScroll ? "scroll" : "hidden",
-        maxWidth: "1200px",
+        maxWidth: "80vw",
       }}
     >
       <svg width={overFlowWidth} height={height}>
@@ -146,6 +146,15 @@ const ChartDisplay: React.FC<BarChartProps> = ({ data, handleDelete }) => {
           y2={height - margin}
           stroke="black"
         />
+        <text
+          x={width / 2}
+          y={height - margin + 40}
+          textAnchor="end"
+          fontSize="15"
+          fill="black"
+        >
+          Time
+        </text>
 
         {/* Y Axis */}
         <line
@@ -155,6 +164,10 @@ const ChartDisplay: React.FC<BarChartProps> = ({ data, handleDelete }) => {
           y2={height - margin}
           stroke="black"
         />
+
+        <text x={150} y={25} textAnchor="end" fontSize="15" fill="black">
+          Volume (Trades)
+        </text>
 
         {/* Y Axis Labels */}
         {Array.from({ length: numTicks }).map((_, i) => {
@@ -228,4 +241,4 @@ const ChartDisplay: React.FC<BarChartProps> = ({ data, handleDelete }) => {
       </svg>
     </div>
   );
-};
+}

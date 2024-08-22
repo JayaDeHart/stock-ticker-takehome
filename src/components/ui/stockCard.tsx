@@ -48,7 +48,7 @@ function StockCard({ data }: Props) {
               <Tooltip>
                 <TooltipTrigger>
                   <span>{delta ? "+" : "-"}$</span>
-                  <span>{change}</span>
+                  <span>{Math.abs(parseFloat(change))}</span>
                 </TooltipTrigger>
                 <TooltipContent side="bottom">
                   <p>Change in price in the last {data.metaData.interval}</p>
